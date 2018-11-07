@@ -1,0 +1,15 @@
+section.post {
+    background-color: lightgray;
+    width: 100%;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+section.post > img {
+    width: 300px;
+    display: inline-block;
+}
+
+section.post > h1 {
+    display: inline-block;
+}

@@ -1,5 +1,8 @@
 'use strict';
 
+/* eslint-env browser */
+/* globals React, ReactDOM */
+
 const e = React.createElement;
 
 class LikeButton extends React.Component {
