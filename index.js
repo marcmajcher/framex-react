@@ -4,44 +4,74 @@
 /* eslint-disable class-methods-use-this */
 /* globals React, ReactDOM */
 
-// class LikeButton extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             liked: false
-//         };
-//     }
+class RedditNav extends React.Component {
+  render() {
+    return ( <nav>Reddit Clone</nav> );
+  }
+}
 
-//     render() {
-//         if (this.state.liked) {
-//             return 'You liked this.';
-//         }
+class RedditHeader extends React.Component {
+  render() {
+    return ( <header>
+        <input name="filter" type="text" />
+        Sort by:
+        <select name="sort" id="sort">
+            <option value="votes">Votes</option>
+            <option value="date">Date</option>
+            <option value="title">Title</option>
+        </select>
+        <button>New Post</button>
+    </header>
+    );
+  }
+}
 
-//         return e(
-//             'button', {
-//                 onClick: () => this.setState({
-//                     liked: true
-//                 })
-//             },
-//             'Like'
-//         );
-//     }
-// }
+class RedditPost extends React.Component {
+  render() {
+    const post = this.props.post;
 
+    return ( 
+    <section className="post">
+        <img src={post.image} alt={post.title} />
+        <h1>{post.title}</h1> <span>| ^ v {post.votes}</span>
+        <div className="author">{post.author}</div>
+        <div className="content">{post.body}</div>
+        <div className="date">{post.date}</div> | <div>X comments</div>
+    </section> 
+    );
+  }
+}
+
+class RedditPosts extends React.Component {
+  render() {
+    const posts = this.props.posts.map(post => <RedditPost post={post} key={post.key}/>)
+    return ( <div>{posts}</div> );
+  }
+}
 
 class RedditClone extends React.Component {
     render() {
-        return ('<h1>asdflkjasdfoiasdfoijasdfoiasjdfoasidfasodif</h1>');
+        return (
+        <div className="reddit-clone">
+            <RedditNav />
+            <div className="container">
+                <RedditHeader />
+                <RedditPosts posts={this.props.posts} />
+                </div>
+        </div>
+        );
     }
 }
 
-const posts = [{
+const posts = [
+    {
         title: 'The Haunter in the Dark',
         body: 'Horrible beyond conception was the Frye yard. The natives, all of a tangible object with measureable dimensions could so easily lead back at the virtual identity, and reflecting on what had set out through the solid form. One definite flash I shall go mad itself at Plate XII, which represented in gruesome detail a butcher’s shop of the frightful position of subordination and pleading. Noyes’s tones exuded a kind of jewellery that the kylix parted, and Willett appeared in the dark. Only once in a throaty voice of my prospective host. From his cursory survey were made. From the very moment I decided that the visions (rather than the worst had happened.',
         author: 'Robert Blake',
         image: 'https://r.hswstatic.com/w_907/gif/stufftoblowyourmind-23-2014-04-The_Haunter_of_the_Dark_by_PeteAmachree.jpg',
         votes: 5,
-        date: '2014-03-01T21:28:56.782Z'
+        date: '2014-03-01T21:28:56.782Z',
+        key: 1
     },
     {
         title: 'The Shadow over Innsmouth',
@@ -49,7 +79,8 @@ const posts = [{
         author: 'Obed Marsh',
         image: 'https://mcrassus.files.wordpress.com/2015/04/shadow-over-innsmouth.jpg',
         votes: 16,
-        date: '2005-08-19T23:15:30.000Z'
+        date: '2005-08-19T23:15:30.000Z',
+        key: 2
     },
     {
         title: 'The Colour out of Space',
@@ -57,7 +88,8 @@ const posts = [{
         author: 'Nahum Gardner',
         image: 'https://f4.bcbits.com/img/a2106523465_10.jpg',
         votes: 2,
-        date: '2013-06-02T13:38:16.002Z'
+        date: '2013-06-02T13:38:16.002Z',
+        key: 3
     },
     {
         title: 'A Shadow out of Time',
@@ -65,7 +97,8 @@ const posts = [{
         author: 'Nathan Peaslee',
         image: 'https://i.ytimg.com/vi/y7jp1CT1h6c/maxresdefault.jpg',
         votes: 8,
-        date: '2011-03-08T09:28:16.002Z'
+        date: '2011-03-08T09:28:16.002Z',
+        key: 4
     },
     {
         title: 'The Dunwich Horror',
@@ -73,7 +106,8 @@ const posts = [{
         author: 'Wilbur Whatley',
         image: 'https://vignette.wikia.nocookie.net/vsbattles/images/c/cd/Dunwich_horror.jpg',
         votes: 4,
-        date: '2011-03-08T09:28:16.002Z'
+        date: '2011-03-08T09:28:16.002Z',
+        key: 5
     },
     {
         title: 'The Statement of Randolph Carter',
@@ -81,7 +115,8 @@ const posts = [{
         author: 'Harley Warren',
         image: 'http://www.epilogue.net/sites/default/files/imagecache/gallery_lg/images/08/02/29636_1199854800.jpg',
         votes: 11,
-        date: '2011-03-08T09:28:16.002Z'
+        date: '2011-03-08T09:28:16.002Z',
+        key: 6
     },
     {
         title: 'Facts Concerning the Late Arthur Jermyn and His Family',
@@ -89,7 +124,8 @@ const posts = [{
         author: 'Wade Jermyn',
         image: 'http://s1.thingpic.com/images/G4/ucEqybipnkojk9TB2vGyVDj3.jpeg',
         votes: 1,
-        date: '2011-03-08T09:28:16.002Z'
+        date: '2011-03-08T09:28:16.002Z',
+        key: 7
     },
     {
         title: 'The Thing on the Doorstep',
@@ -97,7 +133,8 @@ const posts = [{
         author: 'Daniel Upton',
         image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Asenath-Waite.jpg/170px-Asenath-Waite.jpg',
         votes: 7,
-        date: '2011-03-08T09:28:16.002Z'
+        date: '2011-03-08T09:28:16.002Z',
+        key: 8
     },
     {
         title: 'At the Mountains of Madness',
@@ -105,7 +142,8 @@ const posts = [{
         author: 'William Dyer',
         image: 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/hostedimages/1432425468i/14957532._SX540_.jpg',
         votes: 21,
-        date: '2011-03-08T09:28:16.002Z'
+        date: '2011-03-08T09:28:16.002Z',
+        key: 9
     },
     {
         title: 'The Whisperer in Darkness',
@@ -113,10 +151,10 @@ const posts = [{
         author: 'Henry Akeley',
         image: 'https://vignette.wikia.nocookie.net/lovecraft/images/3/31/Screenshot_20171022-090458.jpg',
         votes: 12,
-        date: '2012-10-09T19:28:16.002Z'
+        date: '2012-10-09T19:28:16.002Z',
+        key: 10
     }
 ];
-
 
 const appDiv = document.querySelector('#redditclone');
 ReactDOM.render(<RedditClone posts={posts} />, appDiv);

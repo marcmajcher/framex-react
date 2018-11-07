@@ -1,3 +1,10 @@
+nav {
+    background-color: lightgray;
+    font-size: 2em;
+    margin-bottom: 20px;
+    padding: 8px;
+}
+
 section.post {
     background-color: lightgray;
     width: 100%;
@@ -5,11 +12,11 @@ section.post {
     margin-bottom: 20px;
 }
 
-section.post > img {
+section.post>img {
     width: 300px;
     display: inline-block;
 }
 
-section.post > h1 {
+section.post>h1 {
     display: inline-block;
 }
