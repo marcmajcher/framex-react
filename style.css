@@ -26,3 +26,8 @@ input.button-disabled {
     color: gray;
     background-color: lightgray;
 }
+
+textarea.invalid, input.invalid {
+    border-color: red;
+}
+
