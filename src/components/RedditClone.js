@@ -25,37 +25,27 @@ export default class RedditClone extends React.Component {
         this.setState({posts: this.state.posts.concat(data)});
     }
 
-    getPostByKey(posts, key) {
-        for (let i=0; i<posts.length; i++) {
-            if (posts[i].key === key) {
-                return posts[i];
-            }
-        }
-    }
-
     vote(ud, key) {
-        const posts = this.state.posts.slice();
-        const post = this.getPostByKey(posts, key);
-
-        if (post) {
-            if (ud === 'up') {
-                post.votes++;
+        this.setState({posts: this.state.posts.map(post => {
+            if (post.key === key) {
+                if (ud === 'up') {
+                    post.votes++;
+                }
+                else {
+                    post.votes = Math.max(0, post.votes-1);
+                }
             }
-            else {
-                post.votes = Math.max(0, post.votes-1);
-            }
-            this.setState(posts);
-        }
+            return post;
+        })});
     }
 
     addComment(comment, key) {
-        const posts = this.state.posts.slice();
-        const post = this.getPostByKey(posts, key);
-
-        if (post) {
-            post.comments.push(comment);
-            this.setState(posts);
-        }
+        this.setState({posts: this.state.posts.map(post => {
+            if (post.key === key) {
+                post.comments.push(comment);
+            }
+            return post;
+        })});
     }
 
     render() {
