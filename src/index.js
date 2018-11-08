@@ -4,6 +4,10 @@
 /* eslint-disable class-methods-use-this */
 /* globals React, ReactDOM */
 
+import React from 'react';
+import ReactDOM from 'react-dom';
+import style from './style.css';
+
 class RedditNav extends React.Component {
   render() {
     return ( <nav>Reddit Clone</nav> );
@@ -50,24 +54,25 @@ class RedditNewPost extends React.Component {
         const post = this.state.post;
         const isDisabled = this.state.submitDisabled;
         const submitClass = (isDisabled ? 'button-disabled' : 'button-primary');
+        const invalid = style.invalid;
 
         return ( 
             <form onSubmit={this.createNewPost}>
                 <hr />
                 <label htmlFor="title">Title</label>
-                <input className={`u-full-width${post.title?'':' invalid'}`} type="text" 
+                <input className={`u-full-width${post.title?'':` ${invalid}`}`} type="text" 
                     name="title" value={post.title} onChange={this.updateField} />
 
                 <label htmlFor="body">Body</label>
-                <textarea className={`u-full-width${post.body?'':' invalid'}`}
+                <textarea className={`u-full-width${post.body?'':` ${invalid}`}`}
                      name="body" value={post.body} onChange={this.updateField} />
 
                 <label htmlFor="author">Author</label>
-                <input className={`u-full-width${post.author?'':' invalid'}`} type="text" 
+                <input className={`u-full-width${post.author?'':` ${invalid}`}`} type="text" 
                     name="author" value={post.author} onChange={this.updateField} />
 
                 <label htmlFor="image">Image</label>
-                <input className={`u-full-width${post.image?'':' invalid'}`} type="text" 
+                <input className={`u-full-width${post.image?'':` ${invalid}`}`} type="text" 
                     name="image" value={post.image} onChange={this.updateField} />
                 <label>
                     <input className={submitClass} type="submit" disabled={isDisabled} value="Create Post" />
@@ -103,7 +108,7 @@ class RedditHeader extends React.Component {
             <RedditNewPost createNewPost={this.createNewPost} /> : ''
 
         return ( <header>
-            <input className="filter" name="filter" type="text" placeholder="Filter" 
+            <input className={style.filter} name="filter" type="text" placeholder="Filter" 
                 onChange={e => this.props.setFilter(e.target.value)}/>
             Sort by: {' '}
             <select name="sort" id="sort" 
@@ -135,8 +140,8 @@ class RedditPostComments extends React.Component {
 
     render() {
         const comments = this.props.post.comments
-            .map(e => <div className="comment" key={e}>{e}</div>);
-        return ( <div className="comments">
+            .map(e => <div className={style.comment} key={e}>{e}</div>);
+        return ( <div className={style.comments}>
             {comments}
             <input onChange={e => this.setState({newComment: e.target.value})} value={this.state.newComment} />
             <button onClick={this.addNewComment}>Add Comment</button>
@@ -170,16 +175,16 @@ class RedditPost extends React.Component {
         const s = (post.comments.length === 1) ? '' : 's';
 
         return ( 
-        <section className="post">
+        <section className={style.post}>
             <img src={post.image} alt={post.title} />
-            <div className="title">{post.title}</div>
-            <div className="votes">
+            <div className={style.title}>{post.title}</div>
+            <div className={style.votes}>
                 <i className="fas fa-arrow-up" onClick={this.upvote}></i> 
                 <i className="fas fa-arrow-down" onClick={this.downvote}></i> 
                 {' '}{post.votes}
             </div>
-            <div className="author">{post.author}</div>
-            <div className="content">{post.body}</div>
+            <div className={style.author}>{post.author}</div>
+            <div className={style.body}>{post.body}</div>
 
             <div className="comments">{moment(post.date).fromNow()} | {' '}
                 <span onClick={this.toggleComments}>
@@ -266,7 +271,7 @@ class RedditClone extends React.Component {
 
     render() {
         return (
-        <div className="reddit-clone">
+        <div className={style['reddit-clone']}>
             <RedditNav />
             <div className="container">
                 <RedditHeader 

@@ -5,14 +5,14 @@ nav {
     padding: 8px;
 }
 
-section.post {
+.post {
     background-color: lightgray;
     width: 100%;
     padding: 16px;
     margin-bottom: 20px;
 }
 
-section.post>img {
+.post>img {
     width: 300px;
     float: left;
     margin-right: 20px;
@@ -34,12 +34,12 @@ section.post>img {
     margin-bottom: 16px;
 }
 
+.body {
+    margin-bottom: 16px;
+    font-size: 1.2em;
+}
 .comments {
     margin-top: 16px;
-}
-
-.content {
-    font-size: 1.2em;
 }
 
 input.button-disabled {
