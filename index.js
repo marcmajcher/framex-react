@@ -98,14 +98,14 @@ class RedditHeader extends React.Component {
             <RedditNewPost createNewPost={this.createNewPost} /> : ''
 
         return ( <header>
-            <input name="filter" type="text" />
+            <input name="filter" type="text" placeholder="Filter"/>
             Sort by:
             <select name="sort" id="sort">
                 <option value="votes">Votes</option>
                 <option value="date">Date</option>
                 <option value="title">Title</option>
             </select>
-            <button className="u-pull-right" onClick={this.toggleNewPostForm}>New Post</button>
+            <button className="u-pull-right button-primary" onClick={this.toggleNewPostForm}>New Post</button>
             { postForm }
         </header>
         );
@@ -113,21 +113,38 @@ class RedditHeader extends React.Component {
 }
 
 class RedditPost extends React.Component {
-  render() {
-    const post = this.props.post;
-    const s = (post.comments.length === 1) ? '' : 's';
+    constructor(props) {
+        super(props);
 
-    return ( 
-    <section className="post">
-        <img src={post.image} alt={post.title} />
-        <h1>{post.title}</h1> <span>| <i className="fas fa-arrow-up"></i> <i className="fas fa-arrow-down"></i> {post.votes}</span>
-        <div className="author">{post.author}</div>
-        <div className="content">{post.body}</div>
-        <div className="date">{moment(post.date).fromNow()}</div> | 
-        <div><i className="fas fa-comment-alt"></i> {post.comments.length} Comment{s}</div>
-    </section> 
-    );
-  }
+        this.upvote = this.upvote.bind(this);
+        this.downvote = this.downvote.bind(this);
+    }
+
+    upvote() {
+        this.props.vote('up', this.props.post.key);
+    }
+    
+    downvote() {
+        this.props.vote('down', this.props.post.key);
+    }
+
+    render() {
+        const post = this.props.post;
+        const s = (post.comments.length === 1) ? '' : 's';
+
+        return ( 
+        <section className="post">
+            <img src={post.image} alt={post.title} />
+            <h1>{post.title}</h1> <span>| 
+            <i className="fas fa-arrow-up" onClick={this.upvote}></i> 
+            <i className="fas fa-arrow-down" onClick={this.downvote}></i> {post.votes}</span>
+            <div className="author">{post.author}</div>
+            <div className="content">{post.body}</div>
+            <div className="date">{moment(post.date).fromNow()}</div> | 
+            <div><i className="fas fa-comment-alt"></i> {post.comments.length} Comment{s}</div>
+        </section> 
+        );
+    }
 }
 
 const sortBy = {
@@ -140,7 +157,7 @@ class RedditPosts extends React.Component {
   render() {
     const posts = this.props.posts
         .sort(sortBy[this.props.sortBy])
-        .map(post => <RedditPost post={post} key={post.key}/>)
+        .map(post => <RedditPost post={post} key={post.key} vote={this.props.vote} />)
     return ( <div>{posts}</div> );
   }
 }
@@ -153,7 +170,8 @@ class RedditClone extends React.Component {
             sortBy: 'votes'
         };
 
-        this.createNewPost = this.createNewPost.bind(this);        
+        this.createNewPost = this.createNewPost.bind(this);  
+        this.vote = this.vote.bind(this);      
     }
 
     createNewPost(data) {
@@ -164,13 +182,38 @@ class RedditClone extends React.Component {
         this.setState({posts: this.state.posts.concat(data)});
     }
 
+    vote(ud, key) {
+        const posts = this.state.posts.slice();
+        let post;
+        for (let i=0; i<posts.length; i++) {
+            if (posts[i].key === key) {
+                post = posts[i];
+                break;
+            }
+        }
+
+        if (post) {
+            if (ud === 'up') {
+                post.votes++;
+            }
+            else {
+                post.votes = Math.max(0, post.votes-1);
+            }
+            this.setState(posts);
+        }
+    }
+
     render() {
         return (
         <div className="reddit-clone">
             <RedditNav />
             <div className="container">
                 <RedditHeader createNewPost={this.createNewPost} />
-                <RedditPosts posts={this.state.posts} sortBy={this.state.sortBy} />
+                <RedditPosts 
+                    posts={this.state.posts} 
+                    sortBy={this.state.sortBy} 
+                    vote={this.vote}    
+                />
                 </div>
         </div>
         );
