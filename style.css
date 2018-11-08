@@ -14,12 +14,32 @@ section.post {
 
 section.post>img {
     width: 300px;
-    display: inline-block;
+    float: left;
     margin-right: 20px;
 }
 
-section.post>h1 {
+.title {
     display: inline-block;
+    font-weight: bold;
+    font-size: 2em;
+    margin-right: 8px;
+}
+
+.votes {
+    display: inline-block;
+}
+
+.author {
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.comments {
+    margin-top: 16px;
+}
+
+.content {
+    font-size: 1.2em;
 }
 
 input.button-disabled {
@@ -27,7 +47,8 @@ input.button-disabled {
     background-color: lightgray;
 }
 
-textarea.invalid, input.invalid {
+textarea.invalid,
+input.invalid {
     border-color: red;
 }
 
