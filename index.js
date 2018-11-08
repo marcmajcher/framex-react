@@ -29,34 +29,52 @@ class RedditHeader extends React.Component {
 class RedditPost extends React.Component {
   render() {
     const post = this.props.post;
+    const s = (post.comments.length === 1) ? '' : 's';
 
     return ( 
     <section className="post">
         <img src={post.image} alt={post.title} />
-        <h1>{post.title}</h1> <span>| ^ v {post.votes}</span>
+        <h1>{post.title}</h1> <span>| <i className="fas fa-arrow-up"></i> <i className="fas fa-arrow-down"></i> {post.votes}</span>
         <div className="author">{post.author}</div>
         <div className="content">{post.body}</div>
-        <div className="date">{post.date}</div> | <div>X comments</div>
+        <div className="date">{moment(post.date).fromNow()}</div> | 
+        <div><i className="fas fa-comment-alt"></i> {post.comments.length} Comment{s}</div>
     </section> 
     );
   }
 }
 
+const sortBy = {
+    votes: (a,b) => b.votes - a.votes,
+    date: (a,b) => b.date - a.date,
+    author: (a,b) => b.author - a.author
+};
+
 class RedditPosts extends React.Component {
   render() {
-    const posts = this.props.posts.map(post => <RedditPost post={post} key={post.key}/>)
+    const posts = this.props.posts
+        .sort(sortBy[this.props.sortBy])
+        .map(post => <RedditPost post={post} key={post.key}/>)
     return ( <div>{posts}</div> );
   }
 }
 
 class RedditClone extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            posts: this.props.posts,
+            sortBy: 'votes'
+        };
+    }
+
     render() {
         return (
         <div className="reddit-clone">
             <RedditNav />
             <div className="container">
                 <RedditHeader />
-                <RedditPosts posts={this.props.posts} />
+                <RedditPosts posts={this.state.posts} sortBy={this.state.sortBy} />
                 </div>
         </div>
         );
@@ -71,7 +89,8 @@ const posts = [
         image: 'https://r.hswstatic.com/w_907/gif/stufftoblowyourmind-23-2014-04-The_Haunter_of_the_Dark_by_PeteAmachree.jpg',
         votes: 5,
         date: '2014-03-01T21:28:56.782Z',
-        key: 1
+        key: 1,
+        comments: ['First post', 'Welcome to 1996, bro.', 'Eat it, old man!']
     },
     {
         title: 'The Shadow over Innsmouth',
@@ -80,7 +99,8 @@ const posts = [
         image: 'https://mcrassus.files.wordpress.com/2015/04/shadow-over-innsmouth.jpg',
         votes: 16,
         date: '2005-08-19T23:15:30.000Z',
-        key: 2
+        key: 2,
+        comments: ['This is the only comment']
     },
     {
         title: 'The Colour out of Space',
@@ -89,7 +109,8 @@ const posts = [
         image: 'https://f4.bcbits.com/img/a2106523465_10.jpg',
         votes: 2,
         date: '2013-06-02T13:38:16.002Z',
-        key: 3
+        key: 3,
+        comments: []
     },
     {
         title: 'A Shadow out of Time',
@@ -98,7 +119,8 @@ const posts = [
         image: 'https://i.ytimg.com/vi/y7jp1CT1h6c/maxresdefault.jpg',
         votes: 8,
         date: '2011-03-08T09:28:16.002Z',
-        key: 4
+        key: 4,
+        comments: []
     },
     {
         title: 'The Dunwich Horror',
@@ -107,7 +129,8 @@ const posts = [
         image: 'https://vignette.wikia.nocookie.net/vsbattles/images/c/cd/Dunwich_horror.jpg',
         votes: 4,
         date: '2011-03-08T09:28:16.002Z',
-        key: 5
+        key: 5,
+        comments: []
     },
     {
         title: 'The Statement of Randolph Carter',
@@ -116,7 +139,8 @@ const posts = [
         image: 'http://www.epilogue.net/sites/default/files/imagecache/gallery_lg/images/08/02/29636_1199854800.jpg',
         votes: 11,
         date: '2011-03-08T09:28:16.002Z',
-        key: 6
+        key: 6,
+        comments: []
     },
     {
         title: 'Facts Concerning the Late Arthur Jermyn and His Family',
@@ -125,7 +149,8 @@ const posts = [
         image: 'http://s1.thingpic.com/images/G4/ucEqybipnkojk9TB2vGyVDj3.jpeg',
         votes: 1,
         date: '2011-03-08T09:28:16.002Z',
-        key: 7
+        key: 7,
+        comments: []
     },
     {
         title: 'The Thing on the Doorstep',
@@ -134,7 +159,8 @@ const posts = [
         image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Asenath-Waite.jpg/170px-Asenath-Waite.jpg',
         votes: 7,
         date: '2011-03-08T09:28:16.002Z',
-        key: 8
+        key: 8,
+        comments: []
     },
     {
         title: 'At the Mountains of Madness',
@@ -143,7 +169,8 @@ const posts = [
         image: 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/hostedimages/1432425468i/14957532._SX540_.jpg',
         votes: 21,
         date: '2011-03-08T09:28:16.002Z',
-        key: 9
+        key: 9,
+        comments: []
     },
     {
         title: 'The Whisperer in Darkness',
@@ -152,7 +179,8 @@ const posts = [
         image: 'https://vignette.wikia.nocookie.net/lovecraft/images/3/31/Screenshot_20171022-090458.jpg',
         votes: 12,
         date: '2012-10-09T19:28:16.002Z',
-        key: 10
+        key: 10,
+        comments: []
     }
 ];
 
