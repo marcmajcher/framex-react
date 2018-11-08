@@ -84,6 +84,7 @@ class RedditHeader extends React.Component {
         this.toggleNewPostForm = this.toggleNewPostForm.bind(this);
         this.createNewPost = this.createNewPost.bind(this);
         this.setFilter = this.setFilter.bind(this);
+        this.setSort = this.setSort.bind(this);
     }
 
     toggleNewPostForm() {
@@ -99,6 +100,11 @@ class RedditHeader extends React.Component {
         this.props.setFilter(e.target.value);
     }
 
+    setSort(e) {
+        console.log(e.target.value);
+        this.props.setSort(e.target.value);
+    }
+
     render() {
         const postForm = this.state.showNewPostForm ? 
             <RedditNewPost createNewPost={this.createNewPost} /> : ''
@@ -106,7 +112,7 @@ class RedditHeader extends React.Component {
         return ( <header>
             <input className="filter" name="filter" type="text" placeholder="Filter" onChange={this.setFilter}/>
             Sort by:
-            <select name="sort" id="sort">
+            <select name="sort" id="sort" onChange={this.setSort}>
                 <option value="votes">Votes</option>
                 <option value="date">Date</option>
                 <option value="title">Title</option>
@@ -155,8 +161,8 @@ class RedditPost extends React.Component {
 
 const sortBy = {
     votes: (a,b) => b.votes - a.votes,
-    date: (a,b) => b.date - a.date,
-    author: (a,b) => b.author - a.author
+    date: (a,b) => new Date(b.date) - new Date(a.date),
+    title: (a,b) => a.title.localeCompare(b.title)
 };
 
 class RedditPosts extends React.Component {
@@ -180,6 +186,7 @@ class RedditClone extends React.Component {
         this.createNewPost = this.createNewPost.bind(this);  
         this.vote = this.vote.bind(this);      
         this.setFilter = this.setFilter.bind(this);
+        this.setSort = this.setSort.bind(this);
     }
 
     createNewPost(data) {
@@ -215,6 +222,10 @@ class RedditClone extends React.Component {
         this.setState({filter});
     }
 
+    setSort(sortBy) {
+        this.setState({sortBy});
+    }
+
     render() {
         return (
         <div className="reddit-clone">
@@ -223,6 +234,7 @@ class RedditClone extends React.Component {
                 <RedditHeader 
                     filter={this.state.filter}
                     setFilter={this.setFilter}
+                    setSort={this.setSort}
                     createNewPost={this.createNewPost}
                 />
                 <RedditPosts 
