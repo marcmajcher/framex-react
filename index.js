@@ -80,8 +80,10 @@ class RedditHeader extends React.Component {
         this.state = {
             showNewPostForm: false,
         };
+
         this.toggleNewPostForm = this.toggleNewPostForm.bind(this);
         this.createNewPost = this.createNewPost.bind(this);
+        this.setFilter = this.setFilter.bind(this);
     }
 
     toggleNewPostForm() {
@@ -93,12 +95,16 @@ class RedditHeader extends React.Component {
         this.props.createNewPost(data);
     }
 
+    setFilter(e) {
+        this.props.setFilter(e.target.value);
+    }
+
     render() {
         const postForm = this.state.showNewPostForm ? 
             <RedditNewPost createNewPost={this.createNewPost} /> : ''
 
         return ( <header>
-            <input name="filter" type="text" placeholder="Filter"/>
+            <input className="filter" name="filter" type="text" placeholder="Filter" onChange={this.setFilter}/>
             Sort by:
             <select name="sort" id="sort">
                 <option value="votes">Votes</option>
@@ -167,11 +173,13 @@ class RedditClone extends React.Component {
         super(props);
         this.state = {
             posts: this.props.posts,
-            sortBy: 'votes'
+            sortBy: 'votes',
+            filter: ''
         };
 
         this.createNewPost = this.createNewPost.bind(this);  
         this.vote = this.vote.bind(this);      
+        this.setFilter = this.setFilter.bind(this);
     }
 
     createNewPost(data) {
@@ -203,14 +211,22 @@ class RedditClone extends React.Component {
         }
     }
 
+    setFilter(filter) {
+        this.setState({filter});
+    }
+
     render() {
         return (
         <div className="reddit-clone">
             <RedditNav />
             <div className="container">
-                <RedditHeader createNewPost={this.createNewPost} />
+                <RedditHeader 
+                    filter={this.state.filter}
+                    setFilter={this.setFilter}
+                    createNewPost={this.createNewPost}
+                />
                 <RedditPosts 
-                    posts={this.state.posts} 
+                    posts={this.state.posts.filter(e => e.title.toLowerCase().match(this.state.filter.toLowerCase()))} 
                     sortBy={this.state.sortBy} 
                     vote={this.vote}    
                 />
