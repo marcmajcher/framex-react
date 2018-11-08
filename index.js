@@ -14,10 +14,13 @@ class RedditNewPost extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: 'the title',
-            author: 'an author',
-            body: 'here is some body text',
-            image: 'https://www.fillmurray.com/300/200'
+            submitDisabled: true,
+            post: {
+                title: '',
+                author: 'an author',
+                body: 'here is some body text',
+                image: 'https://www.fillmurray.com/300/200'
+            }
         };
 
         this.createNewPost = this.createNewPost.bind(this);
@@ -26,30 +29,44 @@ class RedditNewPost extends React.Component {
     
     createNewPost(e) {
         e.preventDefault();
-        this.props.createNewPost(this.state);
+        this.props.createNewPost(this.state.post);
     }
 
     updateField(e) {
-        this.setState({[e.target.name]: e.target.value});
+        const post = Object.assign({}, this.state.post);
+        post[e.target.name] = e.target.value;
+
+        let submitDisabled = false;
+        ['title', 'author', 'body', 'image'].forEach(e => {
+            if (post[e] === '') {
+                submitDisabled = true;
+            }
+        })
+
+        this.setState({submitDisabled, post});
     }
 
     render() {
+        const post = this.state.post;
+        const isDisabled = this.state.submitDisabled;
+        const submitClass = (isDisabled ? 'button-disabled' : 'button-primary');
+
         return ( 
             <form onSubmit={this.createNewPost}>
                 <hr />
                 <label htmlFor="title">Title</label>
-                <input className="u-full-width" type="text" name="title" value={this.state.title} onChange={this.updateField} />
+                <input className="u-full-width" type="text" name="title" value={post.title} onChange={this.updateField} />
 
                 <label htmlFor="body">Body</label>
-                <textarea className="u-full-width" name="body" value={this.state.body} onChange={this.updateField} />
+                <textarea className="u-full-width" name="body" value={post.body} onChange={this.updateField} />
 
                 <label htmlFor="author">Author</label>
-                <input className="u-full-width" type="text" name="author" value={this.state.author} onChange={this.updateField} />
+                <input className="u-full-width" type="text" name="author" value={post.author} onChange={this.updateField} />
 
                 <label htmlFor="image">Image</label>
-                <input className="u-full-width" type="text" name="image" value={this.state.image} onChange={this.updateField} />
+                <input className="u-full-width" type="text" name="image" value={post.image} onChange={this.updateField} />
                 <label>
-                    <input className="button-primary" type="submit" value="Create Post" />
+                    <input className={submitClass} type="submit" disabled={isDisabled} value="Create Post" />
                 </label>
                 <hr />
             </form>
@@ -140,7 +157,6 @@ class RedditClone extends React.Component {
     }
 
     createNewPost(data) {
-        console.log('creating new postttt',data)
         data.votes = 0;
         data.date = new Date();
         data.key = this.state.posts.length + 1;

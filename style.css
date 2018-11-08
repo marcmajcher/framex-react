@@ -21,3 +21,8 @@ section.post>img {
 section.post>h1 {
     display: inline-block;
 }
+
+input.button-disabled {
+    color: gray;
+    background-color: lightgray;
+}
