@@ -55,16 +55,20 @@ class RedditNewPost extends React.Component {
             <form onSubmit={this.createNewPost}>
                 <hr />
                 <label htmlFor="title">Title</label>
-                <input className={`u-full-width${post.title?'':' invalid'}`} type="text" name="title" value={post.title} onChange={this.updateField} />
+                <input className={`u-full-width${post.title?'':' invalid'}`} type="text" 
+                    name="title" value={post.title} onChange={this.updateField} />
 
                 <label htmlFor="body">Body</label>
-                <textarea className={`u-full-width${post.body?'':' invalid'}`} name="body" value={post.body} onChange={this.updateField} />
+                <textarea className={`u-full-width${post.body?'':' invalid'}`}
+                     name="body" value={post.body} onChange={this.updateField} />
 
                 <label htmlFor="author">Author</label>
-                <input className={`u-full-width${post.author?'':' invalid'}`} type="text" name="author" value={post.author} onChange={this.updateField} />
+                <input className={`u-full-width${post.author?'':' invalid'}`} type="text" 
+                    name="author" value={post.author} onChange={this.updateField} />
 
                 <label htmlFor="image">Image</label>
-                <input className={`u-full-width${post.image?'':' invalid'}`} type="text" name="image" value={post.image} onChange={this.updateField} />
+                <input className={`u-full-width${post.image?'':' invalid'}`} type="text" 
+                    name="image" value={post.image} onChange={this.updateField} />
                 <label>
                     <input className={submitClass} type="submit" disabled={isDisabled} value="Create Post" />
                 </label>
@@ -83,8 +87,6 @@ class RedditHeader extends React.Component {
 
         this.toggleNewPostForm = this.toggleNewPostForm.bind(this);
         this.createNewPost = this.createNewPost.bind(this);
-        this.setFilter = this.setFilter.bind(this);
-        this.setSort = this.setSort.bind(this);
     }
 
     toggleNewPostForm() {
@@ -96,40 +98,59 @@ class RedditHeader extends React.Component {
         this.props.createNewPost(data);
     }
 
-    setFilter(e) {
-        this.props.setFilter(e.target.value);
-    }
-
-    setSort(e) {
-        console.log(e.target.value);
-        this.props.setSort(e.target.value);
-    }
-
     render() {
         const postForm = this.state.showNewPostForm ? 
             <RedditNewPost createNewPost={this.createNewPost} /> : ''
 
         return ( <header>
-            <input className="filter" name="filter" type="text" placeholder="Filter" onChange={this.setFilter}/>
+            <input className="filter" name="filter" type="text" placeholder="Filter" 
+                onChange={e => this.props.setFilter(e.target.value)}/>
             Sort by:
-            <select name="sort" id="sort" onChange={this.setSort}>
+            <select name="sort" id="sort" 
+                onChange={e => this.props.setSort(e.target.value)}>
                 <option value="votes">Votes</option>
                 <option value="date">Date</option>
                 <option value="title">Title</option>
             </select>
-            <button className="u-pull-right button-primary" onClick={this.toggleNewPostForm}>New Post</button>
+            <button className="u-pull-right button-primary" 
+                onClick={this.toggleNewPostForm}>New Post</button>
             { postForm }
         </header>
         );
     }
 }
 
-class RedditPost extends React.Component {
+class RedditPostComments extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {newComment: ''}
+        this.addNewComment = this.addNewComment.bind(this);
+    }
+
+    addNewComment() {
+        this.props.addComment(this.state.newComment, this.props.post.key);
+        this.setState({newComment:''});
+    }
+
+    render() {
+        const comments = this.props.post.comments
+            .map(e => <div className="comment" key={e}>{e}</div>);
+        return ( <div className="comments">
+            {comments}
+            <input onChange={e => this.setState({newComment: e.target.value})} value={this.state.newComment} />
+            <button onClick={this.addNewComment}>Add Comment</button>
+            </div>);
+    }
+}
+
+class RedditPost extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { showComments: false };
         this.upvote = this.upvote.bind(this);
         this.downvote = this.downvote.bind(this);
+        this.toggleComments = this.toggleComments.bind(this);
     }
 
     upvote() {
@@ -138,6 +159,10 @@ class RedditPost extends React.Component {
     
     downvote() {
         this.props.vote('down', this.props.post.key);
+    }
+
+    toggleComments() {
+        this.setState({ showComments: !this.state.showComments });
     }
 
     render() {
@@ -153,7 +178,11 @@ class RedditPost extends React.Component {
             <div className="author">{post.author}</div>
             <div className="content">{post.body}</div>
             <div className="date">{moment(post.date).fromNow()}</div> | 
-            <div><i className="fas fa-comment-alt"></i> {post.comments.length} Comment{s}</div>
+            <div onClick={this.toggleComments}>
+                <i className="fas fa-comment-alt"></i> {post.comments.length} Comment{s}
+            </div>
+            {this.state.showComments ? 
+                <RedditPostComments post={post} addComment={this.props.addComment} /> : ''}
         </section> 
         );
     }
@@ -169,7 +198,8 @@ class RedditPosts extends React.Component {
   render() {
     const posts = this.props.posts
         .sort(sortBy[this.props.sortBy])
-        .map(post => <RedditPost post={post} key={post.key} vote={this.props.vote} />)
+        .map(post => <RedditPost post={post} key={post.key} 
+                      vote={this.props.vote} addComment={this.props.addComment} />)
     return ( <div>{posts}</div> );
   }
 }
@@ -184,9 +214,8 @@ class RedditClone extends React.Component {
         };
 
         this.createNewPost = this.createNewPost.bind(this);  
-        this.vote = this.vote.bind(this);      
-        this.setFilter = this.setFilter.bind(this);
-        this.setSort = this.setSort.bind(this);
+        this.vote = this.vote.bind(this);
+        this.addComment = this.addComment.bind(this);    
     }
 
     createNewPost(data) {
@@ -197,15 +226,17 @@ class RedditClone extends React.Component {
         this.setState({posts: this.state.posts.concat(data)});
     }
 
-    vote(ud, key) {
-        const posts = this.state.posts.slice();
-        let post;
+    getPostByKey(posts, key) {
         for (let i=0; i<posts.length; i++) {
             if (posts[i].key === key) {
-                post = posts[i];
-                break;
+                return posts[i];
             }
         }
+    }
+
+    vote(ud, key) {
+        const posts = this.state.posts.slice();
+        const post = this.getPostByKey(posts, key);
 
         if (post) {
             if (ud === 'up') {
@@ -218,12 +249,14 @@ class RedditClone extends React.Component {
         }
     }
 
-    setFilter(filter) {
-        this.setState({filter});
-    }
+    addComment(comment, key) {
+        const posts = this.state.posts.slice();
+        const post = this.getPostByKey(posts, key);
 
-    setSort(sortBy) {
-        this.setState({sortBy});
+        if (post) {
+            post.comments.push(comment);
+            this.setState(posts);
+        }
     }
 
     render() {
@@ -233,14 +266,15 @@ class RedditClone extends React.Component {
             <div className="container">
                 <RedditHeader 
                     filter={this.state.filter}
-                    setFilter={this.setFilter}
-                    setSort={this.setSort}
+                    setFilter={filter => this.setState({filter})}
+                    setSort={sortBy => this.setState({sortBy})}
                     createNewPost={this.createNewPost}
                 />
                 <RedditPosts 
                     posts={this.state.posts.filter(e => e.title.toLowerCase().match(this.state.filter.toLowerCase()))} 
                     sortBy={this.state.sortBy} 
-                    vote={this.vote}    
+                    vote={this.vote}
+                    addComment={this.addComment} 
                 />
                 </div>
         </div>
