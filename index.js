@@ -10,20 +10,89 @@ class RedditNav extends React.Component {
   }
 }
 
+class RedditNewPost extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            title: 'the title',
+            author: 'an author',
+            body: 'here is some body text',
+            image: 'https://www.fillmurray.com/300/200'
+        };
+
+        this.createNewPost = this.createNewPost.bind(this);
+        this.updateField = this.updateField.bind(this);
+    }
+    
+    createNewPost(e) {
+        e.preventDefault();
+        this.props.createNewPost(this.state);
+    }
+
+    updateField(e) {
+        this.setState({[e.target.name]: e.target.value});
+    }
+
+    render() {
+        return ( 
+            <form onSubmit={this.createNewPost}>
+                <hr />
+                <label htmlFor="title">Title</label>
+                <input className="u-full-width" type="text" name="title" value={this.state.title} onChange={this.updateField} />
+
+                <label htmlFor="body">Body</label>
+                <textarea className="u-full-width" name="body" value={this.state.body} onChange={this.updateField} />
+
+                <label htmlFor="author">Author</label>
+                <input className="u-full-width" type="text" name="author" value={this.state.author} onChange={this.updateField} />
+
+                <label htmlFor="image">Image</label>
+                <input className="u-full-width" type="text" name="image" value={this.state.image} onChange={this.updateField} />
+                <label>
+                    <input className="button-primary" type="submit" value="Create Post" />
+                </label>
+                <hr />
+            </form>
+        );
+    }
+}
+
 class RedditHeader extends React.Component {
-  render() {
-    return ( <header>
-        <input name="filter" type="text" />
-        Sort by:
-        <select name="sort" id="sort">
-            <option value="votes">Votes</option>
-            <option value="date">Date</option>
-            <option value="title">Title</option>
-        </select>
-        <button>New Post</button>
-    </header>
-    );
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            showNewPostForm: false,
+        };
+        this.toggleNewPostForm = this.toggleNewPostForm.bind(this);
+        this.createNewPost = this.createNewPost.bind(this);
+    }
+
+    toggleNewPostForm() {
+        this.setState({showNewPostForm: !this.state.showNewPostForm});
+    }
+
+    createNewPost(data) {
+        this.setState({showNewPostForm: false});
+        this.props.createNewPost(data);
+    }
+
+    render() {
+        const postForm = this.state.showNewPostForm ? 
+            <RedditNewPost createNewPost={this.createNewPost} /> : ''
+
+        return ( <header>
+            <input name="filter" type="text" />
+            Sort by:
+            <select name="sort" id="sort">
+                <option value="votes">Votes</option>
+                <option value="date">Date</option>
+                <option value="title">Title</option>
+            </select>
+            <button className="u-pull-right" onClick={this.toggleNewPostForm}>New Post</button>
+            { postForm }
+        </header>
+        );
+    }
 }
 
 class RedditPost extends React.Component {
@@ -66,6 +135,17 @@ class RedditClone extends React.Component {
             posts: this.props.posts,
             sortBy: 'votes'
         };
+
+        this.createNewPost = this.createNewPost.bind(this);        
+    }
+
+    createNewPost(data) {
+        console.log('creating new postttt',data)
+        data.votes = 0;
+        data.date = new Date();
+        data.key = this.state.posts.length + 1;
+        data.comments = [];
+        this.setState({posts: this.state.posts.concat(data)});
     }
 
     render() {
@@ -73,7 +153,7 @@ class RedditClone extends React.Component {
         <div className="reddit-clone">
             <RedditNav />
             <div className="container">
-                <RedditHeader />
+                <RedditHeader createNewPost={this.createNewPost} />
                 <RedditPosts posts={this.state.posts} sortBy={this.state.sortBy} />
                 </div>
         </div>
