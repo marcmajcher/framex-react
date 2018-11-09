@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import style from '../style.css';
 import { addPost, toggleNewPostForm } from '../actions';
+import style from '../style.css';
 
 class RedNewPost extends React.Component {
     constructor(props) {

@@ -1,7 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux'
+import { addComment } from '../actions';
 import style from '../style.css';
 
-export default class RedPostComments extends React.Component {
+class RedPostComments extends React.Component {
   constructor(props) {
       super(props);
 
@@ -10,17 +12,19 @@ export default class RedPostComments extends React.Component {
   }
 
   addNewComment() {
-      this.props.addComment(this.state.newComment, this.props.post.key);
+      this.props.dispatch(addComment(this.state.newComment, this.props.post.key));
       this.setState({newComment:''});
   }
 
   render() {
       const comments = this.props.post.comments
-          .map(e => <div className={style.comment} key={e}>{e}</div>);
+          .map((e,i) => <div className={style.comment} key={i}>{e}</div>);
       return ( <div className={style.comments}>
           {comments}
           <input onChange={e => this.setState({newComment: e.target.value})} value={this.state.newComment} />
-          <button onClick={this.addNewComment}>Add Comment</button>
+          {' '}<button onClick={this.addNewComment}>Add Comment</button>
           </div>);
   }
 }
+
+export default connect()(RedPostComments);

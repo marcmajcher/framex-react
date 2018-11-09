@@ -1,8 +1,8 @@
 import React from 'react';
 import RedNewPost from './RedNewPost';
-import style from '../style.css';
 import { connect } from 'react-redux'
 import { setFilter, setSortBy, toggleNewPostForm, SortMethods } from '../actions';
+import style from '../style.css';
 
 const RedHeader = (props) => (
     <header>

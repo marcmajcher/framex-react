@@ -10,6 +10,22 @@ export const addPost = post => ({
   post
 })
 
+export const voteUp = key => ({
+  type: 'VOTE_UP', 
+  key
+})
+
+export const voteDown = key => ({
+  type: 'VOTE_DOWN', 
+  key
+})
+
+export const addComment = (comment, key) => ({
+  type: 'ADD_COMMENT', 
+  comment,
+  key
+})
+
 export const setFilter = filter => ({
   type: 'SET_FILTER',
   filter
