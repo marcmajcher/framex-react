@@ -1,7 +1,7 @@
 import React from 'react';
 import style from '../style.css';
 
-export default class RedditPostComments extends React.Component {
+export default class RedPostComments extends React.Component {
   constructor(props) {
       super(props);
 

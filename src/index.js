@@ -1,12 +1,9 @@
-'use strict';
-
-/* eslint-env browser */
-/* eslint-disable class-methods-use-this */
-/* globals React, ReactDOM */
-
 import React from 'react';
-import ReactDOM from 'react-dom';
-import RedditClone from './components/RedditClone';
+import { render } from 'react-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux'
+import RedClone from './components/RedClone';
+import reducer from './reducers';
 
 const posts = [
     {
@@ -111,5 +108,11 @@ const posts = [
     }
 ];
 
-const appDiv = document.querySelector('#redditclone');
-ReactDOM.render(<RedditClone posts={posts} />, appDiv);
+const store = createStore(reducer, {posts});
+
+render(
+    <Provider store={store}>
+        <RedClone />
+    </Provider>,
+    document.getElementById('redclone')
+);

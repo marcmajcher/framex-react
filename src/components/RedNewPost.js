@@ -1,7 +1,7 @@
 import React from 'react';
 import style from '../style.css';
 
-export default class RedditNewPost extends React.Component {
+export default class RedNewPost extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
