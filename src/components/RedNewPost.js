@@ -1,7 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import style from '../style.css';
+import { addPost, toggleNewPostForm } from '../actions';
 
-export default class RedNewPost extends React.Component {
+class RedNewPost extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,7 +22,8 @@ export default class RedNewPost extends React.Component {
     
     createNewPost(e) {
         e.preventDefault();
-        this.props.createNewPost(this.state.post);
+        this.props.dispatch(addPost(this.state.post));
+        this.props.dispatch(toggleNewPostForm());
     }
 
     updateField(e) {
@@ -69,3 +72,5 @@ export default class RedNewPost extends React.Component {
         );
     }
 }
+
+export default connect()(RedNewPost);

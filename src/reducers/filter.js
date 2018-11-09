@@ -1,6 +1,6 @@
 const filter = (state = '', action) => {
   switch (action.type) {
-    case 'FILTER': 
+    case 'SET_FILTER': 
       return action.filter; 
     default:
       return state;

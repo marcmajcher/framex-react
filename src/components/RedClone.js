@@ -64,13 +64,13 @@ export default App;
 //             <div className="container">
 //                 <RedditHeader store={this.store}
 //                     filter={this.store.getState().filter}
-//                     setFilter={filter => this.store.dispatch({type: 'FILTER', filter})}
-//                     setSort={sortBy => this.store.dispatch({type: 'SORT', sortBy})}
+//                     setFilter={filter => this.store.dispatch({type: '', filter})}
+//                     setSort={sortBy => this.store.dispatch({type: '', sortBy})}
 //                     createNewPost={this.createNewPost}
 //                 />
 //                 <RedditPosts 
 //                     store={this.store}
-//                     posts={this.store.getState().posts.filter(e => e.title.toLowerCase().match(this.store.getState().filter.toLowerCase()))} 
+//                     posts={this.store.getState().posts.filter(e => e.title.().match(this.store.getState().filter.()))} 
 //                     sortBy={this.store.getState().sortBy} 
 //                     vote={this.vote}
 //                     addComment={this.addComment} 
